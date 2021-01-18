@@ -11,20 +11,21 @@
 
     <form action="admin.php" method="POST">
         <label>Ajouter un mot</label>
-        <input type="text" name="addmot">
+        <input type="text" name="mot">
         <input type="submit" name="valider">
         <label>Supprimer un mot</label>
-        <input type="text" name="delmot">
-        <input type="submit" name="supprimer" value="Supprimer">
+        <input type="text" name="supprimer">
+        <input type="submit" name="valide" value="Supprimer">
     </form>
     <br />
     <?php
 
 $fichier = fopen('mots.txt', 'r+');
-
+$fichier2 = file("mots.txt");
+$count = count($fichier2);
 $i = 1;
 
-while ($i <= 100){
+while ($i <= $count){
     $ligne = fgets($fichier);
     echo $ligne . "<br />";
     $i++;
@@ -34,17 +35,10 @@ if (isset($_POST['valider'])){
     $text = htmlspecialchars($_POST['mot']);
     $table = array($text);
 
-
-    if(strpos($text, $i)){
-        echo "Le mot existe déjà dans la liste";
-        exit;
-    }else{
-        foreach ($table as $test){ 
-            if(ctype_alpha($test)){
-                if(is_writable('mots.txt')){
+    foreach ($table as $test){ 
+        if(ctype_alpha($test)){
+            if(is_writable('mots.txt')){
                 file_put_contents("mots.txt", "\n$text", FILE_APPEND);
-                header('Location: http://localhost/pendu/admin.php');
-                }
             }
         }
     }
@@ -62,8 +56,6 @@ if (isset($_POST['valide'])){
             $result .= $line;
         }
     }
-    preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "", 'mots.txt');
-    header('Location: http://localhost/pendu/admin.php');
     file_put_contents('mots.txt', $result);
 }
 
