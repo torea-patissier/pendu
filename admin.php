@@ -8,68 +8,123 @@
 </head>
 
 <body>
+<?php
+//Je créer un objet anonyme
+$TYPE_FORM = new stdClass();
+// Ici je définis les paramètres que peut venir prendre pour formulaire
+$TYPE_FORM->DELETE = "delete";
+$TYPE_FORM->CREATE = "create";
+// Ici je définis une constance pour le chemin du fichier
+const PATH = "mots.txt";
 
-    <form action="admin.php" method="POST">
-        <label>Ajouter un mot</label>
-        <input type="text" name="mot">
-        <input type="submit" name="valider">
-        <label>Supprimer un mot</label>
-        <input type="text" name="supprimer">
-        <input type="submit" name="valide" value="Supprimer">
-    </form>
-    <br />
-    <?php
 
-$fichier = fopen('mots.txt', 'r+');
-$fichier2 = file("mots.txt");
-$count = count($fichier2);
-$i = 1;
-
-while ($i <= $count){
-    $ligne = fgets($fichier);
-    echo $ligne . "<br />";
-    $i++;
+// Cette fonction va écrire le mot passé en paramètre à la suite du fichier
+function saveWordToFile($path = null, $word = null)
+{
+    if ($path && $word) {
+        $contentFile = file_get_contents($path);
+        $contentFile .= $word . ",";
+        file_put_contents($path, $contentFile);
+    }
 }
 
-if (isset($_POST['valider'])){
-    $text = htmlspecialchars($_POST['mot']);
-    $table = array($text);
+// Cette fonction va suprimmer le mot passé en paramètre et réécrire l'ensemble du fichier
+function deleteWordFromFile($path, $wordToDelete)
+{
+    if ($path && $wordToDelete) {
+        $contentFile = file_get_contents($path);
+        $explodedContent = explode(",", $contentFile);
+        if (($key = array_search($wordToDelete, $explodedContent)) !== false) {
+            unset($explodedContent[$key]);
+        }
+        $implodedContent = implode(",", $explodedContent);
+        file_put_contents($path, $implodedContent);
+    }
+}
 
-    foreach ($table as $test){ 
-        if(ctype_alpha($test)){
-            if(is_writable('mots.txt')){
-                file_put_contents("mots.txt", "\n$text", FILE_APPEND);
+
+// Vérifie si le fichier existe bien
+function isFileExist($path)
+{
+    return file_exists($path);
+}
+
+
+// Vérifie si le mot est déjà présent dans la liste et renvoie un Boolean
+function isWordAlreadyExist($path, $wordToCheck)
+{
+    if ($path && $wordToCheck) {
+        $contentFile = file_get_contents($path);
+        $explodedContent = explode(",", $contentFile);
+        foreach ($explodedContent as $word) {
+            if (strtolower($word) == strtolower($wordToCheck)) {
+                return true;
             }
         }
+        return false;
+    }
+    return false;
+}
+
+function getContentFile($path){
+    if($path){
+        return file_get_contents($path);
     }
 }
 
+//Vérifie si des mots existent et les affiche
 
 
-if (isset($_POST['valide'])){
-    $lines = file('mots.txt');
-    $search = htmlspecialchars ($_POST['supprimer']);
-    $result = "";
+?>
 
-    foreach($lines as $line){
-        if (stripos($line, $search) === false) {
-            $result .= $line;
-        }
+
+<form action="" method="POST">
+    <label>Ajouter un mot</label>
+    <input type="text" name="word">
+    <input type="hidden" name="TYPE_FORM" value="<?= $TYPE_FORM->CREATE ?>">
+    <input type="submit" name="valider">
+</form>
+<br />
+<form action="" method="POST">
+    <label>Supprimer un mot</label>
+    <input type="text" name="word">
+    <input type="hidden" name="TYPE_FORM" value="<?= $TYPE_FORM->DELETE ?>">
+    <input type="submit" name="supprimer" value="Supprimer">
+</form>
+<br />
+
+<?php echo getContentFile(PATH); ?>
+
+
+<?php
+
+//Ici je vérifie d'abord si dans la variable d'environnement POST on a des valeurs
+if (isset($_POST) && !empty($_POST)) {
+    // Et je créer un switch en fonction du type du formulaire
+    switch ($_POST["TYPE_FORM"]) {
+        // Si c'est un create
+        case ($TYPE_FORM->CREATE):
+            if (isFileExist(PATH)) {
+                if (!isWordAlreadyExist(PATH, $_POST['word'])) {
+                    saveWordToFile(PATH, $_POST['word']);
+                    echo "<br />" . "Mot ajouté à la liste";
+                }
+            }
+            break;
+        // Si c'est un delete
+        case($TYPE_FORM->DELETE):
+            if (isFileExist(PATH)) {
+                deleteWordFromFile(PATH, $_POST['word']);
+                echo "<br />" . "Mot supprimé de la liste";
+            }
+            break;
     }
-    file_put_contents('mots.txt', $result);
 }
 
-
-
-
-
-
-
-fclose($fichier);
-?> 
+// dans l'idéal, il aurait fallu tout mettre dans des fichiers séparé, créer une classe Files, et créer des méthodes plutôt
+// Que des fonctions, mais là ça fera largmeent l'affaire
+?>
 </body>
-
 </html>
-
 
 <!-- PENSER AUX DOUBLONS AVANT DE RENDRE LE PROJET -->
