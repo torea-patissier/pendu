@@ -66,6 +66,7 @@ function isWordAlreadyExist($path, $wordToCheck)
     return false;
 }
 
+// Si le fichier existe retourne son contenu
 function getContentFile($path){
     if($path){
         return file_get_contents($path);
@@ -93,7 +94,6 @@ function getContentFile($path){
 </form>
 <br />
 
-<?php echo getContentFile(PATH); ?>
 
 
 <?php
@@ -107,7 +107,7 @@ if (isset($_POST) && !empty($_POST)) {
             if (isFileExist(PATH)) {
                 if (!isWordAlreadyExist(PATH, $_POST['word'])) {
                     saveWordToFile(PATH, $_POST['word']);
-                    echo "<br />" . "Mot ajouté à la liste";
+                    echo "Mot ajouté à la liste" . "<br />";
                 }
             }
             break;
@@ -115,11 +115,13 @@ if (isset($_POST) && !empty($_POST)) {
         case($TYPE_FORM->DELETE):
             if (isFileExist(PATH)) {
                 deleteWordFromFile(PATH, $_POST['word']);
-                echo "<br />" . "Mot supprimé de la liste";
+                echo "Mot supprimé de la liste" . "<br />";
             }
             break;
     }
 }
+
+echo getContentFile(PATH);
 
 // dans l'idéal, il aurait fallu tout mettre dans des fichiers séparé, créer une classe Files, et créer des méthodes plutôt
 // Que des fonctions, mais là ça fera largmeent l'affaire
@@ -128,3 +130,5 @@ if (isset($_POST) && !empty($_POST)) {
 </html>
 
 <!-- PENSER AUX DOUBLONS AVANT DE RENDRE LE PROJET -->
+
+!=
