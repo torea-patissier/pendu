@@ -1,4 +1,24 @@
-<?php session_start(); ?>
+<?php
+session_start();
+
+//Je vérifie si les sessions existent, sinon, je les créer
+if (!isset($_SESSION["Tentatives"]))$_SESSION["Tentatives"] = array();
+if (!isset($_SESSION["MotAvecTentatives"])) $_SESSION["MotAvecTentatives"] = array();
+if (!isset($_SESSION["MotADeviner"])) $_SESSION["MotADeviner"] = "";
+
+const PATH = "mots.txt";
+include "classes/pendu.class.php";
+
+$PENDU = new pendu(PATH);
+
+//Je vérifie si le MotADeviner à été initialiser
+if (strlen($_SESSION["MotADeviner"]) === 0) {
+    //Sinon, je le fais
+    $newWord = $PENDU->arrayRandomValue($PENDU->makeFileArray());
+    $_SESSION["MotADeviner"] = $newWord;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,46 +27,41 @@
     <title>Pendu</title>
 </head>
 <body>
-    
+
 <?php
 
-    include "classes/pendu.class.php";
-
-    //Je créer un objet
-    $PENDU = new pendu();
-
-    // Ici je définis une constance pour le chemin du fichier
-    const PATH = "mots.txt";
-
-    $_SESSION["error"] = "0";
-    $_SESSION["img"] = "";
-    $_SESSION["message"] = "";
-    $_SESSION["find"] = 0;
-    $_SESSION["word"] = "";
-    $_SESSION["Hword"] = "";
-
-    $array = $PENDU->makeFileArray(PATH);
-    $_SESSION['word'] = $PENDU->arrayRandomValue($array);
-    $_SESSION["HWord"] = $PENDU->setWordtoUnderscore($_SESSION['word']);
-
-    echo $_SESSION["HWord"];
-
-    echo '<br />';
-    echo '<br />';
-
-?>
-
-    <form action="" method="GET">
-    <input type="text" name="word">
-    </form>
-
-    <?php
-
-    if(isset($_GET['word']) && !empty($_GET['word'])){
-
+//J'enregistre la lettre essayée dans les tentatives
+    if(isset($_GET["word"]) && !empty($_GET["word"])){
+        array_push($_SESSION["Tentatives"],$_GET["word"]);
     }
 
+    //Ici c'est pour réinitialiser
+    if(isset($_POST["new"])){
+        $PENDU->newGame();
+    }
 ?>
+
+
+<?php
+if (isset($_SESSION['MotADeviner'])) {
+    $PENDU->displayWord();
+    $formatedWord = implode("", $_SESSION["MotAvecTentatives"]);
+    echo $_SESSION["MotADeviner"];
+    echo "<br>";
+    echo $formatedWord;
+}
+?>
+
+<form action="" method="GET">
+    <input type="text" name="word">
+</form>
+
+<form action="" method="post">
+    <input type="hidden" name="new">
+    <input type="submit" value="rejouer">
+</form>
+
+
 </body>
 </html>
 

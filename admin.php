@@ -12,16 +12,12 @@
 
 include 'classes/file.class.php';
 //Je créer un objet anonyme
-$TYPE_FORM = new file();
+$TYPE_FORM = new file("mots.txt");
 // Ici je définis les paramètres que peut venir prendre pour formulaire
 $TYPE_FORM->DELETE = "delete";
 $TYPE_FORM->CREATE = "create";
 // Ici je définis une constance pour le chemin du fichier
 const PATH = "mots.txt";
-
-
-
-
 
 
 ?>
@@ -33,15 +29,14 @@ const PATH = "mots.txt";
     <input type="hidden" name="TYPE_FORM" value="<?= $TYPE_FORM->CREATE ?>">
     <input type="submit" name="valider">
 </form>
-<br />
+<br/>
 <form action="" method="POST">
     <label>Supprimer un mot</label>
     <input type="text" name="word">
     <input type="hidden" name="TYPE_FORM" value="<?= $TYPE_FORM->DELETE ?>">
     <input type="submit" name="supprimer" value="Supprimer">
 </form>
-<br />
-
+<br/>
 
 
 <?php
@@ -52,16 +47,16 @@ if (isset($_POST) && !empty($_POST)) {
     switch ($_POST["TYPE_FORM"]) {
         // Si c'est un create
         case ($TYPE_FORM->CREATE):
-            if ($TYPE_FORM->isFileExist(PATH)) {
-                if (!$TYPE_FORM->isWordAlreadyExist(PATH, $_POST['word'])) {
-                    $TYPE_FORM->saveWordToFile(PATH, $_POST['word']);
+            if ($TYPE_FORM->isFileExist()) {
+                if (!$TYPE_FORM->isWordAlreadyExist($_POST['word'])) {
+                    $TYPE_FORM->saveWordToFile($_POST['word']);
                 }
             }
             break;
         // Si c'est un delete
         case($TYPE_FORM->DELETE):
-            if ($TYPE_FORM->isFileExist(PATH)) {
-                $TYPE_FORM->deleteWordFromFile(PATH, $_POST['word']);
+            if ($TYPE_FORM->isFileExist()) {
+                $TYPE_FORM->deleteWordFromFile($_POST['word']);
             }
             break;
     }
@@ -69,8 +64,7 @@ if (isset($_POST) && !empty($_POST)) {
 
 echo $TYPE_FORM->getContentFile(PATH);
 
-// dans l'idéal, il aurait fallu tout mettre dans des fichiers séparé, créer une classe Files, et créer des méthodes plutôt
-// Que des fonctions, mais là ça fera largmeent l'affaire
+
 ?>
 </body>
 </html>
