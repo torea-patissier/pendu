@@ -9,8 +9,10 @@
 
 <body>
 <?php
+
+include 'classes/file.class.php';
 //Je créer un objet anonyme
-$TYPE_FORM = new stdClass();
+$TYPE_FORM = new file();
 // Ici je définis les paramètres que peut venir prendre pour formulaire
 $TYPE_FORM->DELETE = "delete";
 $TYPE_FORM->CREATE = "create";
@@ -18,62 +20,8 @@ $TYPE_FORM->CREATE = "create";
 const PATH = "mots.txt";
 
 
-// Cette fonction va écrire le mot passé en paramètre à la suite du fichier
-function saveWordToFile($path = null, $word = null)
-{
-    if ($path && $word) {
-        $contentFile = file_get_contents($path);
-        $contentFile .= $word . ",";
-        file_put_contents($path, $contentFile);
-    }
-}
-
-// Cette fonction va suprimmer le mot passé en paramètre et réécrire l'ensemble du fichier
-function deleteWordFromFile($path, $wordToDelete)
-{
-    if ($path && $wordToDelete) {
-        $contentFile = file_get_contents($path);
-        $explodedContent = explode(",", $contentFile);
-        if (($key = array_search($wordToDelete, $explodedContent)) !== false) {
-            unset($explodedContent[$key]);
-        }
-        $implodedContent = implode(",", $explodedContent);
-        file_put_contents($path, $implodedContent);
-    }
-}
 
 
-// Vérifie si le fichier existe bien
-function isFileExist($path)
-{
-    return file_exists($path);
-}
-
-
-// Vérifie si le mot est déjà présent dans la liste et renvoie un Boolean
-function isWordAlreadyExist($path, $wordToCheck)
-{
-    if ($path && $wordToCheck) {
-        $contentFile = file_get_contents($path);
-        $explodedContent = explode(",", $contentFile);
-        foreach ($explodedContent as $word) {
-            if (strtolower($word) == strtolower($wordToCheck)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    return false;
-}
-
-// Si le fichier existe retourne son contenu
-function getContentFile($path){
-    if($path){
-        return file_get_contents($path);
-    }
-}
-
-//Vérifie si des mots existent et les affiche
 
 
 ?>
@@ -104,24 +52,22 @@ if (isset($_POST) && !empty($_POST)) {
     switch ($_POST["TYPE_FORM"]) {
         // Si c'est un create
         case ($TYPE_FORM->CREATE):
-            if (isFileExist(PATH)) {
-                if (!isWordAlreadyExist(PATH, $_POST['word'])) {
-                    saveWordToFile(PATH, $_POST['word']);
-                    echo "Mot ajouté à la liste" . "<br />";
+            if ($TYPE_FORM->isFileExist(PATH)) {
+                if (!$TYPE_FORM->isWordAlreadyExist(PATH, $_POST['word'])) {
+                    $TYPE_FORM->saveWordToFile(PATH, $_POST['word']);
                 }
             }
             break;
         // Si c'est un delete
         case($TYPE_FORM->DELETE):
-            if (isFileExist(PATH)) {
-                deleteWordFromFile(PATH, $_POST['word']);
-                echo "Mot supprimé de la liste" . "<br />";
+            if ($TYPE_FORM->isFileExist(PATH)) {
+                $TYPE_FORM->deleteWordFromFile(PATH, $_POST['word']);
             }
             break;
     }
 }
 
-echo getContentFile(PATH);
+echo $TYPE_FORM->getContentFile(PATH);
 
 // dans l'idéal, il aurait fallu tout mettre dans des fichiers séparé, créer une classe Files, et créer des méthodes plutôt
 // Que des fonctions, mais là ça fera largmeent l'affaire
@@ -130,5 +76,3 @@ echo getContentFile(PATH);
 </html>
 
 <!-- PENSER AUX DOUBLONS AVANT DE RENDRE LE PROJET -->
-
-!=

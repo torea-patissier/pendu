@@ -10,57 +10,43 @@
     
 <?php
 
-    $_SESSION["error"] = "0";
-    $_SESSION["img"] = "";
-    $_SESSION["message"] = "";
-    $_SESSION["trouve"] = 0;
+    include "classes/pendu.class.php";
 
-
-    //Je créer un objet anonyme
-    $TYPE_FORM = new stdClass();
+    //Je créer un objet
+    $PENDU = new pendu();
 
     // Ici je définis une constance pour le chemin du fichier
     const PATH = "mots.txt";
 
-    // Vérifie si le fichier existe bien
-    function isFileExist($path)
-    {
-    return file_exists($path);
-    }
+    $_SESSION["error"] = "0";
+    $_SESSION["img"] = "";
+    $_SESSION["message"] = "";
+    $_SESSION["find"] = 0;
+    $_SESSION["word"] = "";
+    $_SESSION["Hword"] = "";
 
-    // Si le fichier existe retourne son contenu
-    function getContentFile($path)
-    {
-        if($path){
-            return file_get_contents($path);
-        }
-    } 
-    // Si le fichier existe, on crée un tableau avec ses valeurs en supprimant les virgurles
-    function makeFileArray($path)
-    {
-        if($path){
-            $contentFile = file_get_contents($path);
-            $explodedContent = explode(",", $contentFile);
-            return $explodedContent;
-        }
-    }
-    // Selectionne une valeur aléatoire dans le tableau
-    function arrayRandomValue($array)
-    {
-        if($array){
-            $arrayRand = array_rand($array, 1);
-            return $arrayRand;    
-        }
-    }
+    $array = $PENDU->makeFileArray(PATH);
+    $_SESSION['word'] = $PENDU->arrayRandomValue($array);
+    $_SESSION["HWord"] = $PENDU->setWordtoUnderscore($_SESSION['word']);
 
-    $rand = makeFileArray(PATH);
-    $array_keys = arrayRandomValue($rand);
-    echo $rand[$array_keys];
-    
+    echo $_SESSION["HWord"];
 
-    
+    echo '<br />';
+    echo '<br />';
+
 ?>
 
+    <form action="" method="GET">
+    <input type="text" name="word">
+    </form>
+
+    <?php
+
+    if(isset($_GET['word']) && !empty($_GET['word'])){
+
+    }
+
+?>
 </body>
 </html>
 
