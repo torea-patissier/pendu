@@ -41,7 +41,7 @@ class pendu
         // Je mets juste les sessions dans un variable pour pas avoir à tout retaper à chaque fois
         $tentatives = $_SESSION["Tentatives"];
         $motADeviner = $_SESSION["MotADeviner"];
-
+        $_SESSION["Erreurs"] = 0;
         // Je réinitialise le mot à chaque fois
         $_SESSION["MotAvecTentatives"] = Array();
 
@@ -59,10 +59,17 @@ class pendu
                     $letter = $tentatives[$j];
                 }
             }
-
+            
             //Je push le resultat ici dans la session
             array_push($_SESSION["MotAvecTentatives"], $letter);
+            
         }
+        if(end($tentatives) == true){
+            if(end($tentatives) != $motADeviner[$i]){
+            $_SESSION["Erreurs"] ++;
+            }
+        }
+            
     }
 
 

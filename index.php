@@ -4,6 +4,7 @@ session_start();
 //Je vérifie si les sessions existent, sinon, je les créer
 if (!isset($_SESSION["Tentatives"]))$_SESSION["Tentatives"] = array();
 if (!isset($_SESSION["MotAvecTentatives"])) $_SESSION["MotAvecTentatives"] = array();
+if (!isset($_SESSION["Erreurs"])) $_SESSION["Erreurs"] = 0;
 if (!isset($_SESSION["MotADeviner"])) $_SESSION["MotADeviner"] = "";
 
 const PATH = "mots.txt";
@@ -50,7 +51,15 @@ if (isset($_SESSION['MotADeviner'])) {
     echo "<br>";
     echo $formatedWord;
 }
+
+echo "<br />";
+print_r ($_SESSION["MotAvecTentatives"]);
+echo "<br />";
+print_r ($_SESSION["Tentatives"]);
+echo "<br />";
+print_r ($_SESSION["Erreurs"]);
 ?>
+
 
 <form action="" method="GET">
     <input type="text" name="word">
