@@ -6,6 +6,7 @@ if (!isset($_SESSION["Tentatives"]))$_SESSION["Tentatives"] = array();
 if (!isset($_SESSION["MotAvecTentatives"])) $_SESSION["MotAvecTentatives"] = array();
 if (!isset($_SESSION["Erreurs"])) $_SESSION["Erreurs"] = 0;
 if (!isset($_SESSION["MotADeviner"])) $_SESSION["MotADeviner"] = "";
+if (!isset($_SESSION["Img"])) $_SESSION["Img"] = "";
 
 const PATH = "mots.txt";
 include "classes/pendu.class.php";
@@ -34,6 +35,45 @@ if (strlen($_SESSION["MotADeviner"]) === 0) {
 //J'enregistre la lettre essayée dans les tentatives
     if(isset($_GET["word"]) && !empty($_GET["word"])){
         array_push($_SESSION["Tentatives"],$_GET["word"]);
+
+        $indexMot = array();
+        $ADeviner = $_SESSION["MotADeviner"];
+
+        for($i=0; $i < strlen($ADeviner); $i++){
+            if(substr(strtolower($_SESSION["MotADeviner"]), $i, 1) == strtolower($_GET["word"])){
+                array_push($indexMot, $i);
+            }
+        }
+        if(count($indexMot) == 0){
+            $_SESSION["Erreurs"] = $_SESSION["Erreurs"] +1;
+
+            switch ($_SESSION['Erreurs']) {
+                case 0:
+                    $_SESSION['Img'] = "";
+                    break;
+                case 1:
+                    $_SESSION['Img'] = "";
+                    break;
+                case 2:
+                    $_SESSION['Img'] = "";
+                    break;
+                case 3:
+                    $_SESSION['Img'] = "";
+                    break;
+                case 4:
+                    $_SESSION['Img'] = "";
+                    break;
+                case 5:
+                    $_SESSION['Img'] = "";
+                    break;
+                case 6:
+                    $_SESSION['Img'] = "";
+                    
+                    break;
+                default:
+                $_SESSION['Img'] = "";
+            }
+        }
     }
 
     //Ici c'est pour réinitialiser
