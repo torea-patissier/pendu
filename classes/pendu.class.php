@@ -144,7 +144,7 @@ class pendu
         if($pos !== false){
         // echo "Continuez à chercher zebi";
             }else{
-                echo "Bien joué zebi";
+                echo "Bien joué, pour recommencer une partie, cliques sur Rejouer ci-dessous";
             }
 
     }

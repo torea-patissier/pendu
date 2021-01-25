@@ -61,3 +61,10 @@ h1{
     flex-direction: row;
     justify-content: space-between;
 }
+
+#AddMot{
+    display: flexbox;
+    justify-content: center;
+    margin-top: 7%;
+    align-items: center;
+}

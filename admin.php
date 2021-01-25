@@ -5,8 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
+    <link rel="stylesheet" href="css/pendu.css" />
 </head>
-
+<header>
+    <nav>
+        <ul>
+            <p><a href="index.php">Accueil</a></p>
+            <p><a href="admin.php">Gèrer les mots</a></p>
+        </ul>
+    </nav>
+</header>
 <body>
 <?php
 
@@ -22,7 +30,10 @@ const PATH = "mots.txt";
 
 ?>
 
-
+<main>
+    <H1>Gestion des mots</H1>
+<section class="Gestion des mots">
+<div id="AddMot">
 <form action="" method="POST">
     <label>Ajouter un mot</label>
     <input type="text" name="word">
@@ -61,11 +72,14 @@ if (isset($_POST) && !empty($_POST)) {
             break;
     }
 }
-
+echo "<p><b> Mots actuellement contenus dans la liste : </b></p> ";
 echo $TYPE_FORM->getContentFile(PATH);
 
 
 ?>
+</div>
+</section>
+</main>
 </body>
 </html>
 
