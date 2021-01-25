@@ -6,7 +6,7 @@ if (!isset($_SESSION["Tentatives"]))$_SESSION["Tentatives"] = array();
 if (!isset($_SESSION["MotAvecTentatives"])) $_SESSION["MotAvecTentatives"] = array();
 if (!isset($_SESSION["Erreurs"])) $_SESSION["Erreurs"] = 0;
 if (!isset($_SESSION["MotADeviner"])) $_SESSION["MotADeviner"] = "";
-if (!isset($_SESSION["Img"])) $_SESSION["Img"] = "";
+if (!isset($_SESSION["Img"])) $_SESSION["Img"] = "IMG/Pendu0.png";
 
 const PATH = "mots.txt";
 include "classes/pendu.class.php";
@@ -27,53 +27,23 @@ if (strlen($_SESSION["MotADeviner"]) === 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pendu</title>
+    <link rel="stylesheet" href="css/pendu.css" />
 </head>
 <body>
-
+<header>
+    <nav>
+        <ul>
+            <p><a href="index.php">Accueil</a></p>
+            <p><a href="admin.php">Gèrer les mots</a></p>
+        </ul>
+    </nav>
+</header>
 <?php
 
 //J'enregistre la lettre essayée dans les tentatives
     if(isset($_GET["word"]) && !empty($_GET["word"])){
         array_push($_SESSION["Tentatives"],$_GET["word"]);
-
-        $indexMot = array();
-        $ADeviner = $_SESSION["MotADeviner"];
-
-        for($i=0; $i < strlen($ADeviner); $i++){
-            if(substr(strtolower($_SESSION["MotADeviner"]), $i, 1) == strtolower($_GET["word"])){
-                array_push($indexMot, $i);
-            }
-        }
-        if(count($indexMot) == 0){
-            $_SESSION["Erreurs"] = $_SESSION["Erreurs"] +1;
-
-            switch ($_SESSION['Erreurs']) {
-                case 0:
-                    $_SESSION['Img'] = "";
-                    break;
-                case 1:
-                    $_SESSION['Img'] = "";
-                    break;
-                case 2:
-                    $_SESSION['Img'] = "";
-                    break;
-                case 3:
-                    $_SESSION['Img'] = "";
-                    break;
-                case 4:
-                    $_SESSION['Img'] = "";
-                    break;
-                case 5:
-                    $_SESSION['Img'] = "";
-                    break;
-                case 6:
-                    $_SESSION['Img'] = "";
-                    
-                    break;
-                default:
-                $_SESSION['Img'] = "";
-            }
-        }
+        $PENDU->verifyErrors();        
     }
 
     //Ici c'est pour réinitialiser
@@ -81,36 +51,44 @@ if (strlen($_SESSION["MotADeviner"]) === 0) {
         $PENDU->newGame();
     }
 ?>
-
-
+<main>
+    <h1>Jeu du Pendu</h1>
+<section class="Jeu">
 <?php
 if (isset($_SESSION['MotADeviner'])) {
     $PENDU->displayWord();
     $formatedWord = implode("", $_SESSION["MotAvecTentatives"]);
-    echo $_SESSION["MotADeviner"];
-    echo "<br>";
-    echo $formatedWord;
+    echo "<div class='motCache'>";
+    echo "<br />" . "<h2>" . $formatedWord . "</h2>" . "<br />";
+    echo "</div>";
+    echo "<br />";
+    echo "<div id='Stats'>";
+    echo "<div class='compteurErreurs'>";
+    echo "Erreurs :";
+    print_r ($_SESSION["Erreurs"]);
+    echo "</div>";
+    echo "<div class='propositions'>";
+    echo "Lettres proposées :";
+    $PENDU->arrayValuesToStr();
+    echo "</div>";
+    echo "</div>";
+    echo "<br />";
+    $PENDU->imgDisplay();
+    echo "<br />";
+    $PENDU->Victory();
 }
-
-echo "<br />";
-print_r ($_SESSION["MotAvecTentatives"]);
-echo "<br />";
-print_r ($_SESSION["Tentatives"]);
-echo "<br />";
-print_r ($_SESSION["Erreurs"]);
 ?>
 
-
 <form action="" method="GET">
-    <input type="text" name="word">
+    <input class="textBox" type="text" name="word">
 </form>
-
+<br />
 <form action="" method="post">
     <input type="hidden" name="new">
-    <input type="submit" value="rejouer">
+    <input class="button" type="submit" value="Rejouer">
 </form>
-
-
+</section>
+</main>
 </body>
 </html>
 
